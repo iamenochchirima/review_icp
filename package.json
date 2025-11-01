@@ -20,7 +20,10 @@
     "@dfinity/candid": "^3.4.1",
     "@dfinity/principal": "^3.4.1",
     "@tailwindcss/vite": "^4.1.16",
+    "@xyflow/react": "^12.9.2",
     "concurrently": "^9.2.1",
+    "lucide-react": "^0.552.0",
+    "react-router-dom": "^7.9.5",
     "tailwindcss": "^4.1.16"
   }
 }
