@@ -1,0 +1,26 @@
+{
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "name": "review_icp",
+  "scripts": {
+    "build": "pnpm --filter frontend build",
+    "prebuild": "pnpm --filter frontend prebuild",
+    "pretest": "pnpm --filter frontend prebuild",
+    "start": "concurrently \"pnpm --filter frontend start\""
+  },
+  "type": "module",
+  "workspaces": [
+    "src/frontend"
+  ],
+  "dependencies": {
+    "@dfinity/agent": "^3.4.1",
+    "@dfinity/auth-client": "^3.4.1",
+    "@dfinity/candid": "^3.4.1",
+    "@dfinity/principal": "^3.4.1",
+    "@tailwindcss/vite": "^4.1.16",
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.1.16"
+  }
+}
