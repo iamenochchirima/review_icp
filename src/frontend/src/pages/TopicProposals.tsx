@@ -3,12 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import ProposalCard from '../components/proposals/ProposalCard';
 import { fetchProposalsByTopic } from '../services/proposals';
 import { proposalTopics } from '../config/proposal-topics';
-import { Proposal } from '../types';
+import type { ProposalInfo } from '../idl/governance/service';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
 export default function TopicProposals() {
   const { topicId } = useParams<{ topicId: string }>();
-  const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [proposals, setProposals] = useState<ProposalInfo[]>([]);
   const [loading, setLoading] = useState(true);
 
   const topic = proposalTopics.find((t) => t.id === topicId);
@@ -71,7 +71,10 @@ export default function TopicProposals() {
         ) : proposals.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {proposals.map((proposal) => (
-              <ProposalCard key={proposal.id} proposal={proposal} />
+              <ProposalCard
+                key={proposal.id?.[0]?.id.toString() || Math.random()}
+                proposal={proposal}
+              />
             ))}
           </div>
         ) : (
