@@ -1,1 +1,23 @@
-service : { greet : (text) -> (text) query }
+type AddUserArgs = record {
+  username : opt text;
+  logo_url : opt text;
+  neuron_id : opt nat64;
+};
+type Result = variant { Ok : text; Err : text };
+type Result_1 = variant { Ok; Err : text };
+type User = record {
+  "principal" : principal;
+  username : opt text;
+  created_at : nat64;
+  logo_url : opt text;
+  neuron_id : opt nat64;
+};
+service : {
+  create_user : (AddUserArgs) -> (Result);
+  delete_user : () -> ();
+  get_current_user : () -> (opt User) query;
+  get_user : (principal) -> (opt User) query;
+  get_user_count : () -> (nat64) query;
+  get_users : (nat32, nat32) -> (vec User) query;
+  update_user : (AddUserArgs) -> (Result_1);
+}

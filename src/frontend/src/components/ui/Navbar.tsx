@@ -1,9 +1,52 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/auth-context';
 import { User, FileText } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import CreateUserModal from '../auth/CreateUserModal';
 
 export default function Navbar() {
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, login, backendActor, identity } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [checkingUser, setCheckingUser] = useState(false);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if (isAuthenticated && backendActor && !checkingUser) {
+        setCheckingUser(true);
+        try {
+          const userData = await backendActor.get_current_user();
+          if (!userData || userData.length === 0 || !userData[0]) {
+            setIsModalOpen(true);
+          }
+        } catch (error) {
+          console.error('Error checking user:', error);
+        } finally {
+          setCheckingUser(false);
+        }
+      }
+    };
+
+    checkUser();
+  }, [isAuthenticated, backendActor]);
+
+  const handleCreateUser = async (data: { username?: string; logo_url?: string; neuron_id?: string }) => {
+    if (!backendActor) {
+      throw new Error('Backend actor not initialized');
+    }
+
+    const args = {
+      username: (data.username ? [data.username] : []) as [] | [string],
+      logo_url: (data.logo_url ? [data.logo_url] : []) as [] | [string],
+      neuron_id: (data.neuron_id ? [BigInt(data.neuron_id)] : []) as [] | [bigint],
+    };
+
+    const result = await backendActor.create_user(args);
+    if ('Err' in result) {
+      throw new Error(result.Err);
+    }
+  };
+
+  const principalId = identity?.getPrincipal().toString() || '';
 
   return (
     <header className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
@@ -39,6 +82,13 @@ export default function Navbar() {
           </button>
         )}
       </div>
+
+      <CreateUserModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateUser}
+        principalId={principalId}
+      />
     </header>
   );
 }

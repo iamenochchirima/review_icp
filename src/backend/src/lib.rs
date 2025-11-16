@@ -1,7 +1,10 @@
-#[ic_cdk::query]
-fn greet(name: String) -> String {
-    format!("Hello, {}!", name)
-}
+use candid::Principal;
 
+pub mod types;
+pub mod state;
+pub mod api;
+pub mod constants;
+
+pub use types::*;
 
 ic_cdk::export_candid!();
