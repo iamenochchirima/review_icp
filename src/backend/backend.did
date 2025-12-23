@@ -6,18 +6,23 @@ type AddUserArgs = record {
 type Result = variant { Ok : text; Err : text };
 type Result_1 = variant { Ok; Err : text };
 type User = record {
+  updated_at : nat64;
   "principal" : principal;
   username : opt text;
   created_at : nat64;
   logo_url : opt text;
+  followed_topics : vec text;
   neuron_id : opt nat64;
 };
 service : {
   create_user : (AddUserArgs) -> (Result);
   delete_user : () -> ();
+  follow_topic : (text) -> (Result_1);
   get_current_user : () -> (opt User) query;
+  get_followed_topics : () -> (vec text) query;
   get_user : (principal) -> (opt User) query;
   get_user_count : () -> (nat64) query;
   get_users : (nat32, nat32) -> (vec User) query;
+  unfollow_topic : (text) -> (Result_1);
   update_user : (AddUserArgs) -> (Result_1);
 }

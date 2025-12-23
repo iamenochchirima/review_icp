@@ -10,7 +10,9 @@ pub struct User {
     pub username: Option<String>,
     pub logo_url: Option<String>,
     pub neuron_id : Option<u64>,
+    pub followed_topics: Vec<String>,
     pub created_at: u64,
+    pub updated_at: u64,
 }
 
 impl Storable for User {

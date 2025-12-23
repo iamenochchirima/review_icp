@@ -23,3 +23,8 @@ pub fn get_users(page: u32, limit: u32) -> Vec<User> {
 pub fn get_user_count() -> u64 {
     state::get_user_count()
 }
+
+#[query]
+pub fn get_followed_topics() -> Vec<String> {
+    state::get_followed_topics()
+}

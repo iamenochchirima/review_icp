@@ -72,3 +72,55 @@ export async function fetchAllOpenProposals(): Promise<ProposalInfo[]> {
     return [];
   }
 }
+
+export async function fetchAllProposals(beforeProposalId?: bigint): Promise<ProposalInfo[]> {
+  try {
+    const actor = await getGovernanceActor();
+
+    const response = await actor.list_proposals({
+      include_reward_status: [],
+      omit_large_fields: [true],
+      before_proposal: beforeProposalId ? [{ id: beforeProposalId }] : [],
+      limit: 50,
+      exclude_topic: [],
+      include_all_manage_neuron_proposals: [],
+      include_status: [1, 2, 3, 4, 5],
+    });
+
+    return response.proposal_info;
+  } catch (error) {
+    console.error('Error fetching all proposals:', error);
+    return [];
+  }
+}
+
+export async function fetchAllProposalsByTopic(topicId: string): Promise<ProposalInfo[]> {
+  try {
+    const topicNumber = topicMapping[topicId];
+    if (topicNumber === undefined) {
+      console.warn(`Unknown topic: ${topicId}`);
+      return [];
+    }
+
+    const actor = await getGovernanceActor();
+
+    const response = await actor.list_proposals({
+      include_reward_status: [],
+      omit_large_fields: [true],
+      before_proposal: [],
+      limit: 100,
+      exclude_topic: [],
+      include_all_manage_neuron_proposals: [],
+      include_status: [1, 2, 3, 4, 5],
+    });
+
+    const proposals = response.proposal_info.filter(
+      (proposal) => proposal.topic === topicNumber
+    );
+
+    return proposals;
+  } catch (error) {
+    console.error('Error fetching proposals:', error);
+    return [];
+  }
+}

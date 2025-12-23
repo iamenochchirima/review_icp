@@ -15,3 +15,13 @@ pub fn update_user(args: AddUserArgs) -> Result<(), String> {
 pub fn delete_user() {
     state::remove_user()
 }
+
+#[update]
+pub fn follow_topic(topic_id: String) -> Result<(), String> {
+    state::follow_topic(topic_id)
+}
+
+#[update]
+pub fn unfollow_topic(topic_id: String) -> Result<(), String> {
+    state::unfollow_topic(topic_id)
+}

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/auth-context';
-import { User, FileText } from 'lucide-react';
+import { User, FileText, Bell } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CreateUserModal from '../auth/CreateUserModal';
 
@@ -66,13 +66,19 @@ export default function Navbar() {
           Proposals
         </Link>
         {isAuthenticated ? (
-          <Link
-            to="/profile"
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <User className="w-4 h-4" />
-            Profile
-          </Link>
+          <>
+            <button className="relative p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+            >
+              <User className="w-4 h-4" />
+              Profile
+            </Link>
+          </>
         ) : (
           <button
             onClick={login}

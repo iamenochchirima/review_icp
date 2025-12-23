@@ -25,7 +25,9 @@ pub fn add_user(args: AddUserArgs) -> Result<String, String> {
         username: args.username,
         logo_url: args.logo_url,
         neuron_id: args.neuron_id,
+        followed_topics: Vec::new(),
         created_at: ic_cdk::api::time(),
+        updated_at: ic_cdk::api::time(),
     };
 
     USERS.with(|l| {
@@ -63,7 +65,8 @@ pub fn update_user(args: AddUserArgs) -> Result<(), String> {
     updated_user.username = args.username;
     updated_user.logo_url = args.logo_url;
     updated_user.neuron_id = args.neuron_id;
-    
+    updated_user.updated_at = ic_cdk::api::time();
+
     USERS.with(|l| {
         l.borrow_mut().insert(caller, updated_user);
     });
@@ -80,4 +83,62 @@ pub fn remove_user() {
 
 pub fn get_user_count() -> u64 {
     USERS.with(|l| l.borrow().len())
+}
+
+pub fn follow_topic(topic_id: String) -> Result<(), String> {
+    let caller = msg_caller();
+    let user = get_user(caller);
+
+    if user.is_none() {
+        return Err("User does not exist".to_string());
+    }
+
+    let mut updated_user = user.unwrap();
+
+    if updated_user.followed_topics.contains(&topic_id) {
+        return Err("Topic already followed".to_string());
+    }
+
+    updated_user.followed_topics.push(topic_id);
+    updated_user.updated_at = ic_cdk::api::time();
+
+    USERS.with(|l| {
+        l.borrow_mut().insert(caller, updated_user);
+    });
+
+    Ok(())
+}
+
+pub fn unfollow_topic(topic_id: String) -> Result<(), String> {
+    let caller = msg_caller();
+    let user = get_user(caller);
+
+    if user.is_none() {
+        return Err("User does not exist".to_string());
+    }
+
+    let mut updated_user = user.unwrap();
+
+    if let Some(pos) = updated_user.followed_topics.iter().position(|t| t == &topic_id) {
+        updated_user.followed_topics.remove(pos);
+        updated_user.updated_at = ic_cdk::api::time();
+
+        USERS.with(|l| {
+            l.borrow_mut().insert(caller, updated_user);
+        });
+
+        Ok(())
+    } else {
+        Err("Topic not followed".to_string())
+    }
+}
+
+pub fn get_followed_topics() -> Vec<String> {
+    let caller = msg_caller();
+    let user = get_user(caller);
+
+    match user {
+        Some(u) => u.followed_topics,
+        None => Vec::new(),
+    }
 }

@@ -96,7 +96,7 @@ export default function Profile() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center bg-gray-950">
         <div className="text-center">
           <p className="text-gray-400 mb-4">You need to login to view this page</p>
           <button
@@ -113,7 +113,7 @@ export default function Profile() {
   const principalId = identity?.getPrincipal().toString() || 'Unknown';
 
   return (
-    <div className="flex-1 overflow-y-auto p-6">
+    <div className="flex-1 overflow-y-auto p-6 bg-gray-950">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
