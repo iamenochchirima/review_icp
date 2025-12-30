@@ -1,11 +1,14 @@
 import type { ProposalInfo } from '../../idl/governance/service';
 import { Clock, Users, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProposalCardProps {
   proposal: ProposalInfo;
 }
 
 export default function ProposalCard({ proposal }: ProposalCardProps) {
+  const navigate = useNavigate();
+
   const getStatusColor = (status: number) => {
     switch (status) {
       case 1:
@@ -15,7 +18,7 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
       case 3:
         return 'bg-green-600';
       case 4:
-        return 'bg-purple-600';
+        return 'bg-emerald-600';
       case 5:
         return 'bg-red-700';
       default:
@@ -74,8 +77,20 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
 
   const dashboardUrl = `https://dashboard.internetcomputer.org/proposal/${proposalId}`;
 
+  const handleCardClick = () => {
+    navigate(`/proposal/${proposalId}`);
+  };
+
+  const handleExternalLinkClick = (e: React.MouseEvent, url: string) => {
+    e.stopPropagation();
+    window.open(url, '_blank');
+  };
+
   return (
-    <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-gray-700 transition-colors">
+    <div
+      onClick={handleCardClick}
+      className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -88,10 +103,10 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
               {getStatusLabel(proposal.status)}
             </span>
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">
+          <h3 className="text-lg font-semibold text-white mb-2 hover:text-blue-400 transition-colors overflow-hidden text-ellipsis">
             {proposalTitle}
           </h3>
-          <p className="text-sm text-gray-400 line-clamp-2">{proposalSummary}</p>
+          <p className="text-sm text-gray-400 line-clamp-2 overflow-hidden break-all">{proposalSummary}</p>
         </div>
       </div>
 
@@ -108,8 +123,8 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
 
         <div>
           <div className="flex justify-between text-sm mb-1">
-            <span className="text-gray-400">Yes: {yesVotes}</span>
-            <span className="text-gray-400">No: {noVotes}</span>
+            <span className="text-gray-400">Yes: {yesVotes.toLocaleString()}</span>
+            <span className="text-gray-400">No: {noVotes.toLocaleString()}</span>
           </div>
           <div className="w-full bg-gray-800 rounded-full h-2">
             <div
@@ -123,17 +138,15 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
         </div>
 
         <div className="pt-2 border-t border-gray-800">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400">Neuron: {proposerId}</span>
-            <a
-              href={proposalUrl || dashboardUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-blue-400 hover:text-blue-300 text-sm"
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm text-gray-400 truncate">Neuron: {proposerId}</span>
+            <button
+              onClick={(e) => handleExternalLinkClick(e, proposalUrl || dashboardUrl)}
+              className="flex items-center gap-1 text-blue-400 hover:text-blue-300 text-sm shrink-0"
             >
-              <span>View Details</span>
+              <span>External Link</span>
               <ExternalLink className="w-4 h-4" />
-            </a>
+            </button>
           </div>
         </div>
       </div>

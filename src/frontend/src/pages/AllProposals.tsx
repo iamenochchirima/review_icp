@@ -6,7 +6,6 @@ import ProposalCard from '../components/proposals/ProposalCard';
 import { proposalTopics } from '../config/proposal-topics';
 
 type StatusFilter = 'all' | 'open' | 'adopted' | 'rejected' | 'executed';
-type SortOption = 'newest' | 'ending-soon' | 'most-voted';
 
 const topicMapping: Record<string, number> = {
   'neuron-management': 1,
@@ -36,7 +35,6 @@ export default function AllProposals() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [topicFilter, setTopicFilter] = useState<string>('all');
-  const [sortOption, setSortOption] = useState<SortOption>('newest');
 
   useEffect(() => {
     fetchAllProposals()
@@ -97,26 +95,8 @@ export default function AllProposals() {
       });
     }
 
-    const sorted = [...filtered];
-
-    if (sortOption === 'newest') {
-      sorted.sort((a, b) => Number(b.proposal_timestamp_seconds) - Number(a.proposal_timestamp_seconds));
-    } else if (sortOption === 'ending-soon') {
-      sorted.sort((a, b) => {
-        const aDeadline = a.deadline_timestamp_seconds?.[0] ? Number(a.deadline_timestamp_seconds[0]) : Infinity;
-        const bDeadline = b.deadline_timestamp_seconds?.[0] ? Number(b.deadline_timestamp_seconds[0]) : Infinity;
-        return aDeadline - bDeadline;
-      });
-    } else if (sortOption === 'most-voted') {
-      sorted.sort((a, b) => {
-        const aTotal = a.latest_tally?.[0] ? Number(a.latest_tally[0].total) : 0;
-        const bTotal = b.latest_tally?.[0] ? Number(b.latest_tally[0].total) : 0;
-        return bTotal - aTotal;
-      });
-    }
-
-    return sorted;
-  }, [proposals, statusFilter, topicFilter, searchQuery, sortOption]);
+    return filtered;
+  }, [proposals, statusFilter, topicFilter, searchQuery]);
 
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-gray-950">
@@ -175,19 +155,6 @@ export default function AllProposals() {
                 ))}
               </select>
             </div>
-
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">Sort By</label>
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value as SortOption)}
-                className="px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-gray-700"
-              >
-                <option value="newest">Newest</option>
-                <option value="ending-soon">Ending Soon</option>
-                <option value="most-voted">Most Voted</option>
-              </select>
-            </div>
           </div>
         </div>
 
@@ -210,7 +177,7 @@ export default function AllProposals() {
               ))}
             </div>
 
-            {hasMore && !searchQuery && statusFilter === 'all' && topicFilter === 'all' && (
+            {hasMore && (
               <div className="flex justify-center mt-8">
                 <button
                   onClick={loadMore}

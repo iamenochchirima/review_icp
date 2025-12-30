@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/auth-context';
-import { User, FileText, Bell } from 'lucide-react';
+import { User, FileText, Bell, BookOpen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CreateUserModal from '../auth/CreateUserModal';
 
@@ -49,44 +49,61 @@ export default function Navbar() {
   const principalId = identity?.getPrincipal().toString() || '';
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-      <Link to="/">
-        <div>
-          <h1 className="text-2xl font-bold">ICP Review</h1>
-          <p className="text-gray-400 text-sm">Easily understand and Review ICP</p>
+    <header className="bg-gray-900 border-b border-gray-800 px-6 py-4">
+      <div className="flex items-center justify-between">
+        {/* Left: Logo */}
+        <div className="flex-1">
+          <Link to="/">
+            <div>
+              <h1 className="text-2xl font-bold">ICP Review</h1>
+              <p className="text-gray-400 text-sm">Easily understand and Review ICP</p>
+            </div>
+          </Link>
         </div>
-      </Link>
 
-      <div className="flex items-center gap-4">
-        <Link
-          to="/proposals"
-          className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-        >
-          <FileText className="w-4 h-4" />
-          Proposals
-        </Link>
-        {isAuthenticated ? (
-          <>
-            <button className="relative p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <Link
-              to="/profile"
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              <User className="w-4 h-4" />
-              Profile
-            </Link>
-          </>
-        ) : (
-          <button
-            onClick={login}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+        {/* Center: Navigation items */}
+        <div className="flex items-center gap-4">
+          <Link
+            to="/proposals"
+            className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
           >
-            Login
-          </button>
-        )}
+            <FileText className="w-4 h-4" />
+            Proposals
+          </Link>
+          <Link
+            to="/learn"
+            className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+          >
+            <BookOpen className="w-4 h-4" />
+            Learn
+          </Link>
+        </div>
+
+        {/* Right: Auth elements */}
+        <div className="flex-1 flex items-center justify-end gap-4">
+          {isAuthenticated ? (
+            <>
+              <button className="relative p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <User className="w-4 h-4" />
+                Profile
+              </Link>
+            </>
+          ) : (
+            <button
+              onClick={login}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+            >
+              Login
+            </button>
+          )}
+        </div>
       </div>
 
       <CreateUserModal

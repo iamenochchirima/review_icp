@@ -124,3 +124,19 @@ export async function fetchAllProposalsByTopic(topicId: string): Promise<Proposa
     return [];
   }
 }
+
+export async function fetchProposalDetails(proposalId: bigint): Promise<ProposalInfo | null> {
+  try {
+    const actor = await getGovernanceActor();
+    const result = await actor.get_proposal_info(proposalId);
+
+    if (result && result.length > 0 && result[0]) {
+      return result[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error fetching proposal details:', error);
+    return null;
+  }
+}
